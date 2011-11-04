@@ -323,7 +323,7 @@ if [[ "$ENABLED_SERVICES" =~ "swift" ]]; then
     # can never change.
     read_password SWIFT_HASH "ENTER A RANDOM SWIFT HASH."
 fi
-    
+
 # Keystone
 # --------
 
@@ -650,13 +650,13 @@ if [[ "$ENABLED_SERVICES" =~ "swift" ]]; then
     USER_GROUP=$(id -g)
     sudo mkdir -p ${SWIFT_DATA_LOCATION}/drives
     sudo chown -R $USER:${USER_GROUP} ${SWIFT_DATA_LOCATION}/drives
-    
+
     # We then create a loopback disk and format it to XFS.
     if [[ ! -e ${SWIFT_DATA_LOCATION}/drives/images/swift.img ]];then
         mkdir -p  ${SWIFT_DATA_LOCATION}/drives/images
         sudo touch  ${SWIFT_DATA_LOCATION}/drives/images/swift.img
         sudo chown $USER: ${SWIFT_DATA_LOCATION}/drives/images/swift.img
-        
+
         dd if=/dev/zero of=${SWIFT_DATA_LOCATION}/drives/images/swift.img \
             bs=1024 count=0 seek=${SWIFT_LOOPBACK_DISK_SIZE}
         mkfs.xfs -f -i size=1024  ${SWIFT_DATA_LOCATION}/drives/images/swift.img
@@ -673,9 +673,9 @@ if [[ "$ENABLED_SERVICES" =~ "swift" ]]; then
     # We then create link to that mounted location so swift would know
     # where to go.
     for x in {1..4}; do sudo ln -sf ${SWIFT_DATA_LOCATION}/drives/sdb1/$x ${SWIFT_DATA_LOCATION}/$x; done
-    
+
     # We now have to emulate a few different servers into one we
-    # create all the directories needed for swift 
+    # create all the directories needed for swift
     tmpd=""
     for d in ${SWIFT_DATA_LOCATION}/drives/sdb1/{1..4} \
         ${SWIFT_CONFIG_LOCATION}/{object,container,account}-server \
@@ -691,7 +691,7 @@ if [[ "$ENABLED_SERVICES" =~ "swift" ]]; then
    # swift-init has a bug using /etc/swift until bug #885595 is fixed
    # we have to create a link
    sudo ln -s ${SWIFT_CONFIG_LOCATION} /etc/swift
-   
+
    # Swift use rsync to syncronize between all the different
    # partitions (which make more sense when you have a multi-node
    # setup) we configure it with our version of rsync.
@@ -727,7 +727,7 @@ if [[ "$ENABLED_SERVICES" =~ "swift" ]]; then
        local bind_port=$2
        local log_facility=$3
        local node_number
-       
+
        for node_number in {1..4};do
            node_path=${SWIFT_DATA_LOCATION}/${node_number}
            sed -e "s,%SWIFT_CONFIG_LOCATION%,${SWIFT_CONFIG_LOCATION},;s,%USER%,$USER,;s,%NODE_PATH%,${node_path},;s,%BIND_PORT%,${bind_port},;s,%LOG_FACILITY%,${log_facility}," \
@@ -754,14 +754,14 @@ if [[ "$ENABLED_SERVICES" =~ "swift" ]]; then
 
    # We then can start rsync.
    sudo /etc/init.d/rsync restart || :
-      
+
    # Create our ring for the object/container/account.
    /usr/local/bin/swift-remakerings
 
    # And now we launch swift-startmain to get our cluster running
    # ready to be tested.
    /usr/local/bin/swift-startmain || :
-   
+
    unset s swift_hash swift_auth_server tmpd
 fi
 
@@ -825,15 +825,16 @@ add_nova_flag "--ec2_dmz_host=$EC2_DMZ_HOST"
 add_nova_flag "--rabbit_host=$RABBIT_HOST"
 add_nova_flag "--rabbit_password=$RABBIT_PASSWORD"
 add_nova_flag "--glance_api_servers=$GLANCE_HOSTPORT"
+add_nova_flag "--default_log_levels=sqlalchemy=WARN,boto=WARN,eventlet.wsgi.server=WARN"
 if [ -n "$INSTANCES_PATH" ]; then
     add_nova_flag "--instances_path=$INSTANCES_PATH"
 fi
 if [ -n "$MULTI_HOST" ]; then
-    add_nova_flag "--multi_host=$MULTI_HOST"
-    add_nova_flag "--send_arp_for_ha=1"
+    add_nova_flag "--multi_host"
+    add_nova_flag "--send_arp_for_ha"
 fi
 if [ "$SYSLOG" != "False" ]; then
-    add_nova_flag "--use_syslog=1"
+    add_nova_flag "--use_syslog"
 fi
 
 # XenServer
