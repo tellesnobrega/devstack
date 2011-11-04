@@ -829,7 +829,7 @@ add_nova_flag "--default_log_levels=sqlalchemy=WARN,boto=WARN,eventlet.wsgi.serv
 if [ -n "$INSTANCES_PATH" ]; then
     add_nova_flag "--instances_path=$INSTANCES_PATH"
 fi
-if [ "$MULTI_HOST" != "False"]; then
+if [ "$MULTI_HOST" != "False" ]; then
     add_nova_flag "--multi_host"
     add_nova_flag "--send_arp_for_ha"
 fi
