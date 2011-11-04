@@ -567,8 +567,10 @@ if [[ "$ENABLED_SERVICES" =~ "n-api" ]]; then
     # required for nova to validate keystone tokens - except we need to switch
     # the config to use our service token instead (instead of the invalid token
     # 999888777666).
-    cp $KEYSTONE_DIR/examples/paste/nova-api-paste.ini $NOVA_DIR/bin
-    sed -e "s,999888777666,$SERVICE_TOKEN,g" -i $NOVA_DIR/bin/nova-api-paste.ini
+    if [ ! -e $NOVA_DIR/bin/nova-api-paste.ini ]; then
+        cp $KEYSTONE_DIR/examples/paste/nova-api-paste.ini $NOVA_DIR/bin
+        sed -e "s,999888777666,$SERVICE_TOKEN,g" -i $NOVA_DIR/bin/nova-api-paste.ini
+    fi
 fi
 
 if [[ "$ENABLED_SERVICES" =~ "n-cpu" ]]; then
