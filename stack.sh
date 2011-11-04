@@ -230,7 +230,7 @@ VLAN_INTERFACE=${VLAN_INTERFACE:-$PUBLIC_INTERFACE}
 # Multi-host is a mode where each compute node runs its own network node.  This
 # allows network operations and routing for a VM to occur on the server that is
 # running the VM - removing a SPOF and bandwidth bottleneck.
-MULTI_HOST=${MULTI_HOST:-0}
+MULTI_HOST=${MULTI_HOST:-False}
 
 # If you are using FlatDHCP on multiple hosts, set the ``FLAT_INTERFACE``
 # variable but make sure that the interface doesn't already have an
@@ -829,7 +829,7 @@ add_nova_flag "--default_log_levels=sqlalchemy=WARN,boto=WARN,eventlet.wsgi.serv
 if [ -n "$INSTANCES_PATH" ]; then
     add_nova_flag "--instances_path=$INSTANCES_PATH"
 fi
-if [ -n "$MULTI_HOST" ]; then
+if [ "$MULTI_HOST" != "False"]; then
     add_nova_flag "--multi_host"
     add_nova_flag "--send_arp_for_ha"
 fi
