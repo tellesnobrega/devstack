@@ -827,7 +827,6 @@ add_nova_flag "--ec2_dmz_host=$EC2_DMZ_HOST"
 add_nova_flag "--rabbit_host=$RABBIT_HOST"
 add_nova_flag "--rabbit_password=$RABBIT_PASSWORD"
 add_nova_flag "--glance_api_servers=$GLANCE_HOSTPORT"
-add_nova_flag "--default_log_levels=sqlalchemy=WARN,boto=WARN,eventlet.wsgi.server=WARN"
 if [ -n "$INSTANCES_PATH" ]; then
     add_nova_flag "--instances_path=$INSTANCES_PATH"
 fi
