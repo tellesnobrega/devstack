@@ -165,3 +165,67 @@ if [[ "$ENABLED_SERVICES" =~ "tempest" ]]; then
         --user alt_demo \
         --role Member
 fi
+
+ORGA=$(get_id keystone tenant-create \
+    --name=orga)
+PROJECTAA=$(get_id keystone tenant-create \
+    --name=orga.projecta)
+mysql keystone -e "update project set id='$ORGA$PROJECTAA' where id='$PROJECTAA';"
+PROJECTAB=$(get_id keystone tenant-create \
+    --name=orga.projectb)
+mysql keystone -e "update project set id='$ORGA$PROJECTAB' where id='$PROJECTAB';"
+ORGB=$(get_id keystone tenant-create \
+    --name=orgb)
+PROJECTBA=$(get_id keystone tenant-create \
+    --name=orgb.projecta)
+mysql keystone -e "update project set id='$ORGB$PROJECTBA' where id='$PROJECTBA';"
+
+USER=$(get_id keystone user-create \
+    --name=orga \
+    --pass="$ADMIN_PASSWORD" \
+    --email=orga@example.com)
+
+keystone user-role-add \
+    --tenant-id $ORGA \
+    --user-id $USER \
+    --role-id $MEMBER_ROLE
+
+USER=$(get_id keystone user-create \
+    --name=orgb \
+    --pass="$ADMIN_PASSWORD" \
+    --email=orga@example.com)
+
+keystone user-role-add \
+    --tenant-id $ORGB \
+    --user-id $USER \
+    --role-id $MEMBER_ROLE
+
+USER=$(get_id keystone user-create \
+    --name=orga.projecta \
+    --pass="$ADMIN_PASSWORD" \
+    --email=orga@example.com)
+
+keystone user-role-add \
+    --tenant-id $ORGA$PROJECTAA \
+    --user-id $USER \
+    --role-id $MEMBER_ROLE
+
+USER=$(get_id keystone user-create \
+    --name=orga.projectb \
+    --pass="$ADMIN_PASSWORD" \
+    --email=orga@example.com)
+
+keystone user-role-add \
+    --tenant-id $ORGA$PROJECTAB \
+    --user-id $USER \
+    --role-id $MEMBER_ROLE
+
+USER=$(get_id keystone user-create \
+    --name=orgb.projecta \
+    --pass="$ADMIN_PASSWORD" \
+    --email=orga@example.com)
+
+keystone user-role-add \
+    --tenant-id $ORGB$PROJECTBA \
+    --user-id $USER \
+    --role-id $MEMBER_ROLE
