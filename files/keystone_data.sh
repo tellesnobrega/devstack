@@ -167,65 +167,65 @@ if [[ "$ENABLED_SERVICES" =~ "tempest" ]]; then
 fi
 
 ORGA=$(get_id keystone tenant-create \
-    --name=orga)
+            --name=orga)
 PROJECTAA=$(get_id keystone tenant-create \
-    --name=orga.projecta)
-mysql keystone -e "update project set id='$ORGA$PROJECTAA' where id='$PROJECTAA';"
+            --name=projecta \
+            --parent_project_id=$ORGA)
 PROJECTAB=$(get_id keystone tenant-create \
-    --name=orga.projectb)
-mysql keystone -e "update project set id='$ORGA$PROJECTAB' where id='$PROJECTAB';"
+            --name=projectb \
+            --parent_project_id=$ORGA)
 ORGB=$(get_id keystone tenant-create \
-    --name=orgb)
+            --name=orgb)
 PROJECTBA=$(get_id keystone tenant-create \
-    --name=orgb.projecta)
-mysql keystone -e "update project set id='$ORGB$PROJECTBA' where id='$PROJECTBA';"
+            --name=projecta \
+            --parent_project_id=$ORGB)
 
 USER=$(get_id keystone user-create \
-    --name=orga \
-    --pass="$ADMIN_PASSWORD" \
-    --email=orga@example.com)
+            --name=orga \
+            --pass="$ADMIN_PASSWORD" \
+            --email=orga@example.com)
 
 keystone user-role-add \
-    --tenant-id $ORGA \
-    --user-id $USER \
-    --role-id $MEMBER_ROLE
+            --tenant-id $ORGA \
+            --user-id $USER \
+            --role-id $MEMBER_ROLE
 
 USER=$(get_id keystone user-create \
-    --name=orgb \
-    --pass="$ADMIN_PASSWORD" \
-    --email=orga@example.com)
+            --name=orgb \
+            --pass="$ADMIN_PASSWORD" \
+            --email=orga@example.com)
 
 keystone user-role-add \
-    --tenant-id $ORGB \
-    --user-id $USER \
-    --role-id $MEMBER_ROLE
+            --tenant-id $ORGB \
+            --user-id $USER \
+            --role-id $MEMBER_ROLE
 
 USER=$(get_id keystone user-create \
-    --name=orga.projecta \
-    --pass="$ADMIN_PASSWORD" \
-    --email=orga@example.com)
+            --name=orga.projecta \
+            --pass="$ADMIN_PASSWORD" \
+            --email=orga@example.com)
 
 keystone user-role-add \
-    --tenant-id $ORGA$PROJECTAA \
-    --user-id $USER \
-    --role-id $MEMBER_ROLE
+            --tenant-id $PROJECTAA \
+            --user-id $USER \
+            --role-id $MEMBER_ROLE
 
 USER=$(get_id keystone user-create \
-    --name=orga.projectb \
-    --pass="$ADMIN_PASSWORD" \
-    --email=orga@example.com)
+            --name=orga.projectb \
+            --pass="$ADMIN_PASSWORD" \
+            --email=orga@example.com)
 
 keystone user-role-add \
-    --tenant-id $ORGA$PROJECTAB \
-    --user-id $USER \
-    --role-id $MEMBER_ROLE
+            --tenant-id $PROJECTAB \
+            --user-id $USER \
+            --role-id $MEMBER_ROLE
 
 USER=$(get_id keystone user-create \
-    --name=orgb.projecta \
-    --pass="$ADMIN_PASSWORD" \
-    --email=orga@example.com)
+            --name=orgb.projecta \
+            --pass="$ADMIN_PASSWORD" \
+            --email=orga@example.com)
 
 keystone user-role-add \
-    --tenant-id $ORGB$PROJECTBA \
-    --user-id $USER \
-    --role-id $MEMBER_ROLE
+            --tenant-id $PROJECTBA \
+            --user-id $USER \
+            --role-id $MEMBER_ROLE
